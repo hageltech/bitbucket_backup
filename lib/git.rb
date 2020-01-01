@@ -18,10 +18,18 @@ module Git
     $?.success?
   end
 
-  def self.push(dir, target)
-    puts "Pushing '#{dir}' to '#{target}'"
-    git(dir, 'git remote get-url bitbucket', false) ||
-      git(dir, "git remote add --mirror=push bitbucket #{target}")
-    git(dir, 'git push --mirror bitbucket')
+  def self.backup_repo(root, username, project, name, url)
+    repo_parent = root + username + project
+    repo_dir = repo_parent + name
+    if File.directory?(repo_dir)
+      puts "directory #{name} already exists, updating from remote"
+      git(repo_dir, 'git remote update --prune')
+    else
+      puts "directory #{name} does not exist, cloning from remote"
+      FileUtils.mkdir_p repo_parent
+      git(repo_parent, "git clone --mirror #{url} #{name}")
+    end
+    git(repo_dir, 'git lfs fetch --all')
+    puts
   end
 end
