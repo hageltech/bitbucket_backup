@@ -1,2 +1,4 @@
 .env
 repos
+vendor/bundle
+.bundle/config
