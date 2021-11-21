@@ -1,3 +1,4 @@
+require 'fileutils'
 module Git
   def self.all_repos(root = 'repos')
     projects = Dir.children(root)
@@ -26,7 +27,7 @@ module Git
       git(repo_dir, 'git remote update --prune')
     else
       puts "directory #{name} does not exist, cloning from remote"
-      FileUtils.mkdir_p repo_parent
+      ::FileUtils.mkdir_p repo_parent
       git(repo_parent, "git clone --mirror #{url} #{name}")
     end
     git(repo_dir, 'git lfs fetch --all')
